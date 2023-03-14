@@ -218,10 +218,10 @@ def make_design_matrix(
         batch_name_estimates, batch_estimates = np.unique(
             combat_info_estimates["batch_levels"], return_inverse=True
         )
-        assert set(batch_name).issubset(set(batch_name_estimates))
-        if set(batch_name) != set(batch_name_estimates):
+        assert set(combat_info_estimates["batch_levels_original"]).issubset(set(batch_name_estimates))
+        if set(combat_info_estimates["batch_levels_original"]) != set(batch_name_estimates):
             for i, b in enumerate(batch):
-                current_name = batch_name[b]
+                current_name = combat_info_estimates["batch_levels_original"][b]
                 (idx,) = np.where(batch_name_estimates == current_name)
                 batch[i] = batch_estimates[idx[0]]
 
@@ -237,7 +237,7 @@ def make_design_matrix(
     hstack_list.append(batch_onehot)
 
     ### categorical one-hots ###
-    cat_names = {}
+    cat_names = {"batch": batch_name}
     for i, (cat_col, cat_col_name) in enumerate(zip(cat_cols, cat_col_names)):
         cat_name, cat = np.unique(np.array(Y[:, cat_col]), return_inverse=True)
         cat_names[cat_col_name] = (i, cat_name.tolist())
